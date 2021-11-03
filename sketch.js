@@ -15,32 +15,30 @@ function print_links() {
 }
 
 function setup() {
-  noStroke();
   createCanvas(windowWidth, 2600);
+  noStroke();
   print_links();
 
-  // count the columns
   print(table.getRowCount() + ' total rows in table');
   print(table.getColumnCount() + ' total columns in table');
   print('All cities:', table.getColumn('current_city'));
 
   for (let i = 0; i < table.getRowCount(); i++) {
     const city = table.get(i, 'current_city');
-    const meanTemp = table.get(i, 'Annual_Precipitation');
-    const meanTempFuture = table.get(i, 'Max_Temperature_of_Warmest_Month');
+    const meanNied = table.get(i, 'Annual_Precipitation');
+    const meanTemp = table.get(i, 'Max_Temperature_of_Warmest_Month');
     
     position = i*200+windowHeight/4;
-    durchmesser = convertDegreesToDurchmesser(meanTemp);
-    durchmesser2 = convertDegreesToDurchmesser2(meanTempFuture);
+    durchmesser = convertDegreesToDurchmesser(meanNied);
+    durchmesser2 = convertDegreesToDurchmesser2(meanTemp);
 
     drawNiederschlag(position);
-    drawLabel(position, city, meanTemp);
+    drawLabel(position, city, meanNied);
 
-    drawNiederschlagFuture(position);
-    drawLabelFuture(position, city, meanTempFuture);
+    drawTemp(position);
+    drawTempLabel(position, city, meanTemp);
   }
 }
-
 
 function convertDegreesToDurchmesser(temp) {
   //size of the ellipse
@@ -48,15 +46,14 @@ function convertDegreesToDurchmesser(temp) {
   return durchmesser;
 }
 
-  function convertDegreesToDurchmesser2(temp) {
-    //size of the ellipse
-    const durchmesser2 = map(temp, 0, 1, 5, 0);
-    return durchmesser2;
-  }
+function convertDegreesToDurchmesser2(temp) {
+  const durchmesser2 = map(temp, 0, 1, 5, 0);
+  return durchmesser2;
+}
 
 function drawNiederschlag(pos) {
   blendMode(MULTIPLY);
-  fill(76, 36, 255);
+  fill(82, 59, 255);
   ellipse(windowWidth/2, pos, durchmesser);
   // circle (x, y, dia)
   textFont('Roboto Mono');
@@ -70,9 +67,8 @@ function drawLabel(pos, city, temp) {
   text(label, windowWidth/2, pos + 5);
 }
 
-
-function drawNiederschlagFuture(pos) {
-  blendMode(DIFFERENCE);
+function drawTemp(pos) {
+  blendMode(EXCLUSION);
   fill(255, 0, 68);
   ellipse(windowWidth/2, pos, durchmesser2);
   // circle (x, y, dia)
@@ -81,7 +77,7 @@ function drawNiederschlagFuture(pos) {
   textAlign(CENTER);
 }
 
-function drawLabelFuture(pos, city, temp) {
+function drawTempLabel(pos, city, temp) {
   fill(0, 0, 0);
   const label = `${city} – ${temp}`;
   text(label, windowWidth/2, pos + 5);
